@@ -1,6 +1,7 @@
 import { Component } from "react";
 import { Button } from "../../components/Button";
 import { Posts } from "../../components/Posts";
+import { TextInput } from "../../components/TextInput";
 import { loadPosts } from "../../utils/load-posts";
 import "./styles.css";
 
@@ -10,6 +11,7 @@ class Home extends Component {
         allPosts: [],
         page: 0,
         postsPerPage: 2,
+        searchValue: "",
     };
 
     async componentDidMount() {
@@ -35,18 +37,44 @@ class Home extends Component {
         this.setState({ posts, page: nextPage });
     };
 
+    handleChange = (e) => {
+        const { value } = e.target;
+        this.setState({ searchValue: value });
+    };
+
     render() {
-        const { page, allPosts, postsPerPage, posts } = this.state;
+        const { page, allPosts, postsPerPage, posts, searchValue } = this.state;
         const noMorePosts = page + postsPerPage >= allPosts;
+
+        const filteredPosts = !!searchValue
+            ? posts.filter((post) => {
+                  return post.title
+                      .toLowerCase()
+                      .includes(searchValue.toLowerCase());
+              })
+            : posts;
+
         return (
             <section className="container">
-                <Posts posts={posts} />
-                <div className="button-container">
-                    <Button
-                        text="Load more posts"
-                        onClick={this.loadMorePosts}
-                        disabled={noMorePosts}
+                <div className="search-container">
+                    {!!searchValue && <h1>Search value: {searchValue}</h1>}
+                    <TextInput
+                        handleChange={this.handleChange}
+                        searchValue={searchValue}
                     />
+                </div>
+
+                {filteredPosts.length > 0 && <Posts posts={filteredPosts} />}
+                {filteredPosts.length === 0 && <p>Não existem posts.</p>}
+
+                <div className="button-container">
+                    {!searchValue && (
+                        <Button
+                            text="Load more posts"
+                            onClick={this.loadMorePosts}
+                            disabled={noMorePosts}
+                        />
+                    )}
                 </div>
             </section>
         );
