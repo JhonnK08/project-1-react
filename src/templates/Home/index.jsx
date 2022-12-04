@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Button } from "../../components/Button";
+import Button from "../../components/Button";
 import { Posts } from "../../components/Posts";
 import { TextInput } from "../../components/TextInput";
 import { loadPosts } from "../../utils/load-posts";
