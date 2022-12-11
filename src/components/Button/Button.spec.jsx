@@ -38,4 +38,10 @@ describe("<Button />", () => {
 
         expect(button).toBeEnabled();
     });
+
+    it("should match snapshot", () => {
+        render(<Button text="Load more" disabled={false} />);
+        const button = screen.getByRole("button", { name: /load more/i });
+        expect(button).toMatchSnapshot();
+    });
 });
